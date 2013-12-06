@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="lunchroom">
+<head>
+  <title>Lunchroom</title>
+  <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="js/angular.js"></script>
+  <script type="text/javascript" src="js/angular-resource.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/lunchroom.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+</head>
+<body>
+  <div class="container" ng-controller="MenuController" ng-init="init()">
+    <h1>Daily Menu</h1>
+    <div class="alert alert-error" ng-show="error">
+      <button type="button" class="close" ng-click="error = null">&times;</button>
+      <strong>Warning!</strong> {{ error }}
+    </div>
+    <table class="table table-striped table-bordered" ng-repeat="group in menuGroups" ng-controller="MenuItemController">
+      <thead>
+        <tr>
+          <th>{{ group.day }} Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in menu | filter:{'day':group.day} | orderBy:'name'">
+          <td>
+            <span class="form-inline">
+              <input type="text" class="span4" ng-model="item.name"/>
+              <input ng-model="item.price" class="input-mini" step="0.05" type="number" placeholder="Price"/>
+              &#160;&#160;
+              <span class="btn-group">
+                <button ng-repeat="g in grades" ng-class="{'btn':true, 'btn-mini': true, 'btn-inverse':item[g.code] }" ng-click="toggleGrade(item, g)">{{ g.initials }}</button>
+              </span>
+              &#160;&#160;
+              <button class="btn btn-mini btn-danger" ng-click="deleteItem(item)" title="Delete Item"><i class="icon-trash icon-white"></i></button>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <form name="newItemForm" class="form-inline" novalidate style="margin-bottom: 0;">
+                <input class="span4" type="text" ng-model="newItem.name" placeholder="Item Name" required/>
+                <button class="btn" ng-click="addItem()" ng-disabled="!newItemForm.$valid"><i class="icon-plus"></i> Add</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row">
+      <button class="btn btn-success pull-right" ng-click="done()"><i class="icon-ok-sign icon-white"></i> Done</button>
+    </div>
+  </div>
+</body>
+</html>

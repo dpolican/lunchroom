@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="lunchroom">
+<head>
+  <title>Lunchroom</title>
+  <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="js/angular.js"></script>
+  <script type="text/javascript" src="js/angular-resource.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/lunchroom.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+</head>
+<body>
+  <div class="container" ng-controller="LunchroomController" ng-init="init()">
+    <div class="hero-unit">
+      <h1>Lunchroom Program</h1>
+      <p>Northwest Christian School's lunchroom menu and ordering system.</p>
+    </div>
+
+    <div class="alert alert-error" ng-show="error">
+      <button type="button" class="close" ng-click="error = null">&times;</button>
+      <strong>Warning!</strong> {{ error }}
+    </div>
+    <div class="alert alert-info" ng-show="loading">
+      <button type="button" class="close" ng-click="loading = null">&times;</button>
+      <strong>Loading!</strong> Please wait...
+    </div>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Classrooms</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form name="classroomForm">
+          <tr ng-repeat="classroom in classrooms | orderBy:sortValue">
+            <td>
+              <span class="form-inline" ng-show="editMode">
+                <select ng-model="classroom.grade" ng-options="g.code as g.description for g in grades">
+                </select>
+                <input type="text" ng-model="classroom.teacher" placeholder="Teacher" required/>
+                <button class="btn btn-mini btn-danger" ng-click="deleteClassroom(classroom)" ><i class="icon-trash icon-white"></i></button>
+              </span>
+              <span ng-hide="editMode">
+                <span class="span6"><a href="./classroom.html?id={{ classroom.id }}">{{ classroom.grade }} - {{ classroom.teacher }}</a></span>
+              </span>
+            </td>
+          </tr>
+        </form>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>
+            <form name="newClassroomForm" class="form-inline" novalidate style="margin-bottom: 0;">
+                <select ng-model="newClassroom.grade" ng-options="g.code as g.description for g in grades" required>
+                  <option value="" class="muted">Select Grade</option>
+                </select>
+                <input type="text" ng-model="newClassroom.teacher" placeholder="Teacher" required/>
+                <button class="btn" ng-click="addClassroom()" ng-disabled="!newClassroomForm.$valid"><i class="icon-plus"></i> Add</button>
+              <button class="btn btn-mini pull-right" ng-click="setEditMode()" ng-hide="editMode"><i class="icon-pencil"></i> Edit List</button>
+              <button class="btn btn-mini pull-right" ng-click="unsetEditMode()" ng-show="editMode" ng-disabled="!classroomForm.$valid"><i class="icon-ok-sign"></i> Done Editing</button>
+            </form>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="row text-center">
+      <a href="menu.html" class="btn btn-info"><i class="icon-th-list icon-white"></i> Daily Menu</a>
+      <a href="orders.html?grades=Kin&title=Kindergarten" class="btn btn-warning" target="orders"><i class="icon-check icon-white"></i> Kindergarten</a>
+      <a href="orders.html?grades=1st&grades=2nd&grades=3rd&title=Grades 1-3" class="btn btn-warning" target="orders"><i class="icon-check icon-white"></i> Grades 1-3</a>
+      <a href="orders.html?grades=4th&grades=5th&title=Grades 4-5" class="btn btn-warning" target="orders"><i class="icon-check icon-white"></i> Grades 4-5</a>
+      <a href="orders.html?grades=6th&grades=7th&grades=8th&title=Grades 6-8&combine=1" class="btn btn-warning" target="orders"><i class="icon-check icon-white"></i> Grades 6-8</a>
+      <a href="orders.html?grades=9th&grades=10th&grades=11th&grades=12th&title=Grades 9-12&combine=1" class="btn btn-warning" target="orders"><i class="icon-check icon-white"></i> Grades 9-12</a>
+    </div>
+  </div>
+</body>
+</html>

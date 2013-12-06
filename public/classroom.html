@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="lunchroom">
+<head>
+  <title>Lunchroom</title>
+  <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="js/angular.js"></script>
+  <script type="text/javascript" src="js/angular-resource.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/lunchroom.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <style type="text/css">
+    body { margin: 20px; }
+    .menu-item { display: inline-block; width: 380px; }
+    .bold { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div ng-controller="ClassroomController" ng-init="init()">
+    <h1>Classroom Order</h1>
+    <div class="alert alert-error" ng-show="error">
+      <button type="button" class="close" ng-click="error = null">&times;</button>
+      <strong>Warning!</strong> {{ error }}
+    </div>
+    <ul class="breadcrumb">
+      <li ng-repeat="item in menu | orderBy:['misc', 'name']" class="menu-item">
+        <span class="label">{{ item.code }}</span> {{ getDisplayName(item.name) }} <span class="label label-inverse">{{item.price | currency}}</span>
+      </li>
+    </ul>
+    <table class="table table-hover table-bordered">
+      <thead>
+      <tr>
+        <th><span>{{ classroom.grade }} - {{ classroom.teacher }}</span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="student in classroom.students | orderBy:'name'">
+        <td>
+          <span class="form-inline" ng-show="editMode">
+            <input type="text" class="span3" ng-model="student.name" placeholder="Student Name" required/>
+            <button class="btn btn-mini btn-danger" ng-click="deleteStudent(student)" title="Delete"><i class="icon-trash icon-white"></i></button>
+          </span>
+          <span ng-hide="editMode">
+            <span class="span3">{{ student.name }}</span>
+            <span class="muted">&#160;</span>
+            <span ng-repeat="item in menu | orderBy:['misc', 'name']">
+              <span ng-class="{ 'muted': !(student.order[item.code]), 'bold': student.order[item.code] }">{{ (student.order[item.code] || 0) | number }}</span>
+              <span class="muted">&times;</span>
+              <span class="label label-warning" ng-click="addOrder($event, student.order, item.code)" title="{{ getDisplayName(item.name) }}">{{ item.code }}</span>
+              <span class="muted">&#160;</span>
+            </span>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <form name="newStudentForm" class="form-inline" style="margin-bottom: 0;" novalidate>
+            <input type="text" class="span3" ng-model="newStudent.name" placeholder="Student Name" required/>
+            <button class="btn" ng-click="addStudent()" ng-disabled="!newStudentForm.$valid"><i class="icon-plus"></i> Add</button>
+            <button class="btn btn-mini pull-right" ng-click="setEditMode()" ng-hide="editMode"><i class="icon-pencil"></i> Edit List</button>
+            <button class="btn btn-mini pull-right" ng-click="unsetEditMode()" ng-show="editMode"><i class="icon-ok-sign"></i> Done Editing</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td>
+          <strong class="span3">Totals:</strong>
+          <span class="muted">&#160;</span>
+          <span ng-repeat="item in menu | orderBy: ['misc', 'name']">
+            <strong>{{ getItemTotal(item.code) | number }}</strong>
+            <span class="muted">&times;</span>
+            <span class="label" title="{{ getDisplayName(item.name) }}">{{ item.code }}</span>
+            <span class="muted">&#160;</span>
+          </span>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+    <div class="row">
+      <button class="btn btn-success pull-right" ng-click="done()"><i class="icon-ok-sign icon-white"></i> Done</button>
+    </div>
+    <br/>
+    <div class="alert alert-info">
+      <h4>Help</h4>
+      <ol>
+        <li>Click on the <span class="label label-warning">menu item</span> on the student's row to add the item to the student's order. To remove the item, hold down the <strong>Alt</strong> key while clicking on the item.</li>
+        <li>You have to click on the <span class="label label-success">Done</span> button to save your changes.</li>
+      </ol>
+    </div>
+  </div>
+</body>
+</html>

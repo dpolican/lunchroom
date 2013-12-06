@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="lunchroom">
+<head>
+  <title>Lunch Orders</title>
+  <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="js/angular.js"></script>
+  <script type="text/javascript" src="js/angular-resource.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/lunchroom.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <style type="text/css">
+    @page { size: auto; margin: 25mm 25mm 25mm 25mm; }
+    .page {page-break-after:always}
+    .classroom-order { page-break-inside: avoid }
+  </style>
+</head>
+<body>
+  <div class="container" ng-controller="OrdersController" ng-init="init()">
+    <h1>Lunch Orders <small>{{ title }}</small></h1>
+    <div class="container classroom-order" ng-repeat="classroom in classrooms | orderBy:getGradeSortValue" ng-hide="combine">
+      <h3>{{ classroom.grade }} - {{ classroom.teacher }}</h3>
+      <div class="row">
+        <span class="span4" style="padding: 6px 0;" ng-repeat="student in classroom.students | orderBy:'name'">
+          <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
+            <span ng-repeat="item in items track by $index">
+              <strong>{{ item }}</strong><span ng-hide="$last">, </span>
+            </span>
+          </span>
+        </span>
+      </div>
+      <hr/>
+    </div>
+    <div class="container" ng-show="combine">
+      <div class="row">
+        <span class="span4" style="padding: 6px 0;" ng-repeat="student in students | orderBy:'name'">
+          <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
+            <span ng-repeat="item in items track by $index">
+              <strong>{{ item }}</strong><span ng-hide="$last">, </span>
+            </span>
+          </span>
+        </span>
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th colspan="4"><h4>Order Totals</h4></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in menu | orderBy: ['misc', 'name']" ng-init="total = orderTotal(item)" ng-show="total">
+          <td><strong class="span1 text-right">{{ total }}</strong></td>
+          <td><span class="span5">{{ getDisplayName(item.name) }} [{{ item.code }}]</span></td>
+          <td><span class="span1 text-right">{{ item.price | currency }} </span></td>
+          <td><strong class="span1 text-right">{{ (total * item.price) | currency }} </strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
