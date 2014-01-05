@@ -7,7 +7,7 @@
   <script type="text/javascript" src="js/angular-resource.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript" src="js/lunchroom.js"></script>
-  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body>
   <div class="container" ng-controller="LunchroomController" ng-init="init()">
@@ -32,7 +32,7 @@
       </thead>
       <tbody>
         <form name="classroomForm">
-          <tr ng-repeat="classroom in classrooms | orderBy:sortValue">
+          <tr ng-repeat="classroom in classrooms | orderBy: [sortValue, 'teacher']">
             <td>
               <span class="form-inline" ng-show="editMode">
                 <select ng-model="classroom.grade" ng-options="g.code as g.description for g in grades">

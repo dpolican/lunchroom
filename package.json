@@ -1,9 +1,16 @@
 {
   "name": "lunchroom",
   "description": "Lunchroom Program",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "author": {
+    "name": "Domingo Polican",
+    "email": "dpolican@gmail.com"
+  },    
+  "repository": {
+    "type":"git",
+    "url":"https://github.com/dpolican/lunchroom.git"
+  },
   "dependencies": {
     "express": "3.x"
-
   }
 }

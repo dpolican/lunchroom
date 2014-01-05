@@ -2,10 +2,8 @@
  * Created by Domingo Polican on 11/16/13.
  */
 /** IE hack for Array.indexOf **/
-if (!Array.prototype.indexOf)
-{
-  Array.prototype.indexOf = function(elt /*, from*/)
-  {
+if (!Array.prototype.indexOf) {
+  Array.prototype.indexOf = function(elt /*, from*/)   {
     var len = this.length >>> 0;
 
     var from = Number(arguments[1]) || 0;
@@ -15,8 +13,7 @@ if (!Array.prototype.indexOf)
     if (from < 0)
       from += len;
 
-    for (; from < len; from++)
-    {
+    for (; from < len; from++)     {
       if (from in this &&
         this[from] === elt)
         return from;
@@ -32,14 +29,14 @@ lunchroom.config(['$locationProvider',
   }]);
 
 lunchroom.factory('Classroom', ['$resource', function($resource) {
-  return $resource('/classroom/:classroomId',
+  return $resource('./classroom/:classroomId',
     {classroomId: '@id'}, { saveAll: { method:'POST', isArray: true } });
 }]);
 lunchroom.factory('Menu', ['$resource', function($resource) {
-  return $resource('/menu', {}, { saveAll: { method:'POST', isArray: true } });
+  return $resource('./menu', {}, { saveAll: { method:'POST', isArray: true } });
 }]);
 lunchroom.factory('Order', ['$resource', function($resource) {
-  return $resource('/order');
+  return $resource('./order');
 }]);
 
 lunchroom.controller("LunchroomController", LunchroomController);
@@ -243,7 +240,7 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
   $scope.done = function() {
     Classroom.save($scope.classroom, function(err) {
       $log.debug("Saved.");
-      $window.location.href ="../index.html"
+      $window.location.href ="./index.html"
     });
   }
 
@@ -257,9 +254,7 @@ function MenuController($scope, $window, $log, Menu) {
     { misc: false, day: "Tuesday" },
     { misc: false, day: "Wednesday" },
     { misc: false, day: "Thursday" },
-    { misc: false, day: "Friday" },
-    { misc: false, day: "Saturday" },
-    { misc: false, day: "Sunday" }
+    { misc: false, day: "Friday" }
   ];
 
   $scope.init = function() {
@@ -272,7 +267,7 @@ function MenuController($scope, $window, $log, Menu) {
     });
     Menu.saveAll({}, $scope.menu, function() {
       $log.debug("Saved.");
-      $window.location.href ="../index.html"
+      $window.location.href ="./index.html"
     });
   }
 }
@@ -313,23 +308,24 @@ function OrdersController($scope, $location, Order, Menu) {
   $scope.classrooms = [
     { grade: "2nd", teacher: "Mr Johnson",
       students: [
-        { name: "John McKinney", order:{ 'HD':3, 'P':0 } },
+        { name: "John McDonald", order:{ 'HD':3, 'P':0 } },
         { name: "Andrew Polican", order:{ 'P':1 } },
-        { name: "Mark Wahl", order:{ 'HD':1, 'P':1 } },
+        { name: "Mark Wahlberg", order:{ 'HD':1, 'P':1 } },
         { name: "Jack Sinnot", order:{ 'HD':3, 'P':0 } },
         { name: "Mary Smith", order:{ 'P':1 } },
         { name: "Laurie Markham", order:{ 'HD':1, 'P':1 } }
       ] },
     { grade: "1st", teacher: "Mrs Smith",
       students: [
-        { name: "John McKinney", order:{ 'HD':3, 'P':0 } },
-        { name: "Andrew Polican", order:{ 'P':1 } },
-        { name: "Mark Wahl", order:{ 'HD':1, 'P':1 } },
-        { name: "Jack Sinnot", order:{ 'HD':3, 'P':0 } },
+        { name: "John McKinsey", order:{ 'HD':3, 'P':0 } },
+        { name: "Dominic Polican", order:{ 'P':1 } },
+        { name: "Mark Walther", order:{ 'HD':1, 'P':1 } },
+        { name: "Jack Singh", order:{ 'HD':3, 'P':0 } },
         { name: "Mary Smith", order:{ 'P':1 } },
-        { name: "Laurie Markham", order:{ 'HD':1, 'P':1 } }
+        { name: "Debra Markham", order:{ 'HD':1, 'P':1 } }
       ] }];
   $scope.menu = [];
+  $scope.noOrders = [];
 
   $scope.init = function() {
     $scope.title = $location.search().title;
@@ -340,6 +336,15 @@ function OrdersController($scope, $location, Order, Menu) {
         var students = [];
         angular.forEach($scope.classrooms, function(classroom) {
           students = students.concat(classroom.students);
+          var hasOrders = false;
+          angular.forEach(classroom.students, function(student) {
+              if (student.order) {
+                  for (var item in student.order) {
+                      if (student.order[item]) { hasOrders = true; }
+                  }
+              }
+          }, hasOrders);
+          if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
         }, students);
         $scope.students = students;
       });
