@@ -237,6 +237,21 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
     return total;
   };
 
+  $scope.getStudentOrderCount = function() {
+    var total = 0;
+    angular.forEach($scope.classroom.students, function(student) {
+        var count = 0;
+        for (item in student.order) {
+            count += (student.order[item]);
+        }
+        if (count > 0) {
+            total++;
+        }
+    }, total);
+
+    return total;
+  };
+
   $scope.done = function() {
     Classroom.save($scope.classroom, function(err) {
       $log.debug("Saved.");
@@ -346,7 +361,21 @@ function OrdersController($scope, $location, Order, Menu) {
           }, hasOrders);
           if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
         }, students);
+
+        students.sort(function(a, b) {
+            if (a.name < b.name) return -1;
+            if (b.name < a.name) return 1;
+            return 0;
+        });
+
+        var chunks = [];
+        var i, l = students.length;
+        for ( i = 0; i < l; i += 30) {
+          chunks.push( students.slice(i, i + 30) );
+        }
+
         $scope.students = students;
+        $scope.studentGroups = chunks;
       });
     }
     var menu = Menu.query(function() {

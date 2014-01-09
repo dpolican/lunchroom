@@ -24,7 +24,7 @@ var ensureCurrentDay = function() {
     || lastDate.getMonth() !== month
     || lastDate.getDate() !== day) {
 
-    var filename = "./data." + lastDate.getFullYear() + lastDate.getMonth() + lastDate.getDate();
+    var filename = "./data.yesterday";
     fs.writeFile(filename, JSON.stringify(lunchroomData), function(saveError) {
       if(saveError) {
         console.log(saveError);
@@ -127,6 +127,7 @@ app.namespace('/lunchroom', function() {
     });
 
     app.get('/order', function(req, res) {
+        ensureCurrentDay();
         var grades = req.param('grades');
         if (!util.isArray(grades)) {
             var grade = grades;

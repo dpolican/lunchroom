@@ -65,13 +65,22 @@
       <tfoot>
       <tr>
         <td>
-          <strong class="span3">Totals:</strong>
+          <strong class="span3">Item Totals:</strong>
           <span class="muted">&#160;</span>
           <span ng-repeat="item in menu | orderBy: ['misc', 'name']">
             <strong>{{ getItemTotal(item.code) | number }}</strong>
             <span class="muted">&times;</span>
             <span class="label" title="{{ getDisplayName(item.name) }}">{{ item.code }}</span>
             <span class="muted">&#160;</span>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong class="span3">Students Who Ordered:</strong>
+          <span class="muted">&#160;</span>
+          <span>
+            <strong>{{ getStudentOrderCount() | number }}</strong>
           </span>
         </td>
       </tr>
