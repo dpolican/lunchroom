@@ -24,7 +24,7 @@
         <span ng-switch-when="0">
           <div class="row">
             <span class="span4" ng-show="classrooms[$index+0]">
-              <h3>{{ classroom.grade }} - {{ classroom.teacher }}</h3>
+              <h3>{{ classrooms[$index+0].grade }} - {{ classrooms[$index+0].teacher }}</h3>
               <div ng-repeat="student in classrooms[$index+0].students | orderBy:'name'" style="padding: 6px 0;">
                 <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
                   <span ng-repeat="item in items track by $index">
@@ -34,7 +34,7 @@
               </div>
             </span>
             <span class="span4" ng-show="classrooms[$index+1]">
-              <h3>{{ classroom.grade }} - {{ classroom.teacher }}</h3>
+              <h3>{{ classrooms[$index+1].grade }} - {{ classrooms[$index+1].teacher }}</h3>
               <div ng-repeat="student in classrooms[$index+1].students | orderBy:'name'" style="padding: 6px 0;">
                 <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
                   <span ng-repeat="item in items track by $index">
@@ -44,7 +44,7 @@
               </div>
             </span>
             <span class="span4" ng-show="classrooms[$index+1]">
-              <h3>{{ classroom.grade }} - {{ classroom.teacher }}</h3>
+              <h3>{{ classrooms[$index+2].grade }} - {{ classrooms[$index+2].teacher }}</h3>
               <div ng-repeat="student in classrooms[$index+2].students | orderBy:'name'" style="padding: 6px 0;">
                 <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
                   <span ng-repeat="item in items track by $index">
