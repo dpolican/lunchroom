@@ -160,7 +160,7 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
       if (item[grade.code]) {
         hasGradeDesignation = true;
       }
-    }, hasGradeDesignation);
+    });
 
     return !hasGradeDesignation;
   }
@@ -172,23 +172,26 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
         if (!$scope.classroom.students) {
           $scope.classroom.students = [];
         }
-      });
-      var menu = Menu.query(function() {
-        var today = LunchroomConstants.days[new Date().getDay()];
-        var todaysMenu = [];
 
         var gradeCode = null;
         angular.forEach(LunchroomConstants.grades, function(grade) {
           if (grade.code == $scope.classroom.grade) {
             gradeCode = grade.code;
           }
-        }, gradeCode);
-        angular.forEach(menu, function(menuItem) {
-          if ((menuItem.day == today || menuItem.misc) && (menuItemHasNoGradeDesignation(menuItem) || menuItem[gradeCode])) {
-            todaysMenu.push(menuItem);
-          }
-        }, todaysMenu);
-        $scope.menu = todaysMenu;
+        });
+
+        var menu = Menu.query(function() {
+          var today = LunchroomConstants.days[new Date().getDay()];
+          var todaysMenu = [];
+
+          angular.forEach(menu, function(menuItem) {
+            if ((menuItem.day == today || menuItem.misc) && (menuItemHasNoGradeDesignation(menuItem) || menuItem[gradeCode])) {
+              todaysMenu.push(menuItem);
+            }
+          });
+
+          $scope.menu = todaysMenu;
+        });
       });
     }
   };
