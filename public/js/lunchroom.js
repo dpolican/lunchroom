@@ -361,9 +361,9 @@ function OrdersController($scope, $location, Order, Menu) {
                       if (student.order[item]) { hasOrders = true; }
                   }
               }
-          }, hasOrders);
+          });
           if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
-        }, students);
+        });
 
         students.sort(function(a, b) {
             if (a.name < b.name) return -1;
@@ -373,8 +373,8 @@ function OrdersController($scope, $location, Order, Menu) {
 
         var chunks = [];
         var i, l = students.length;
-        for ( i = 0; i < l; i += 30) {
-          chunks.push( students.slice(i, i + 30) );
+        for ( i = 0; i < l; i += 36) {
+          chunks.push( students.slice(i, i + 36) );
         }
 
         $scope.students = students;
