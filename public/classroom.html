@@ -12,6 +12,7 @@
     body { margin: 20px; }
     .menu-item { display: inline-block; width: 380px; }
     .bold { font-weight: bold; }
+    .clickable { cursor: pointer; }
   </style>
 </head>
 <body>
@@ -45,7 +46,7 @@
             <span ng-repeat="item in menu | orderBy:['misc', 'name']">
               <span ng-class="{ 'muted': !(student.order[item.code]), 'bold': student.order[item.code] }">{{ (student.order[item.code] || 0) | number }}</span>
               <span class="muted">&times;</span>
-              <span class="label label-warning" ng-click="addOrder($event, student.order, item.code)" title="{{ getDisplayName(item.name) }}">{{ item.code }}</span>
+              <span class="label label-warning clickable" ng-click="addOrder($event, student.order, item.code)" title="{{ getDisplayName(item.name) }}">{{ item.code }}</span>
               <span class="muted">&#160;</span>
             </span>
           </span>

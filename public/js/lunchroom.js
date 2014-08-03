@@ -348,22 +348,31 @@ function OrdersController($scope, $location, Order, Menu) {
   $scope.init = function() {
     $scope.title = $location.search().title;
     $scope.combine = $location.search().combine;
+    $scope.shortlist = $location.search().shortlist;
     var grades = $location.search().grades;
     if (grades) {
       $scope.classrooms = Order.query({ "grades": grades }, function() {
         var students = [];
+        var studentsWhoOrdered = [];
         angular.forEach($scope.classrooms, function(classroom) {
           students = students.concat(classroom.students);
           var hasOrders = false;
           angular.forEach(classroom.students, function(student) {
+              var studentOrdered = false;
               if (student.order) {
                   for (var item in student.order) {
-                      if (student.order[item]) { hasOrders = true; }
+                      if (student.order[item]) {
+                          hasOrders = true;
+                          studentOrdered = true;
+                      }
                   }
               }
+              if (studentOrdered) { studentsWhoOrdered.push(student); }
           });
           if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
         });
+
+        if ($scope.shortlist === '1') { students = studentsWhoOrdered; }
 
         students.sort(function(a, b) {
             if (a.name < b.name) return -1;

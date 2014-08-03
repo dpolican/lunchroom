@@ -11,7 +11,7 @@
   <style type="text/css">
     @page {
       size: auto;
-      margin: 25mm 25mm 25mm 25mm;
+      margin: 20mm 25mm 20mm 25mm;
     }
     .classroom-order {
       page-break-inside: avoid
@@ -82,7 +82,7 @@
         </span>
       </span>
     </div>
-    <div class="container" ng-show="combine" ng-repeat="studentGroup in studentGroups">
+    <div class="container classroom-order" ng-show="combine" ng-repeat="studentGroup in studentGroups">
       <span ng-switch on="$index % 3">
         <span ng-switch-when="0">
           <div class="row">
@@ -127,9 +127,9 @@
       <tbody>
         <tr ng-repeat="item in menu | orderBy: ['misc', 'name']">
           <td><strong class="span1 text-right">{{ orderTotal(item) }}</strong></td>
-          <td><span class="span8">{{ getDisplayName(item.name) }} [{{ item.code }}]</span></td>
+          <td><span class="span7">{{ getDisplayName(item.name) }} [{{ item.code }}]</span></td>
           <td><span class="span1 text-right">{{ item.price | currency }} </span></td>
-          <td><strong class="span1 text-right">{{ (orderTotal(item) * item.price) | currency }} </strong></td>
+          <td><strong class="span2 text-right">{{ (orderTotal(item) * item.price) | currency }} </strong></td>
         </tr>
       </tbody>
     </table>
