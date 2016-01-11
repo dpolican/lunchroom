@@ -256,6 +256,7 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
   };
 
   $scope.done = function() {
+    $scope.classroom.ordered = true;
     Classroom.save($scope.classroom, function(err) {
       $log.debug("Saved.");
       $window.location.href ="./index.html"
@@ -332,7 +333,8 @@ function OrdersController($scope, $location, Order, Menu) {
         { name: "Jack Sinnot", order:{ 'HD':3, 'P':0 } },
         { name: "Mary Smith", order:{ 'P':1 } },
         { name: "Laurie Markham", order:{ 'HD':1, 'P':1 } }
-      ] },
+      ],
+      specialRequest: "One whole pizza for student body. One make-your-own-salad for Mr Johnson."},
     { grade: "1st", teacher: "Mrs Smith",
       students: [
         { name: "John McKinsey", order:{ 'HD':3, 'P':0 } },
@@ -344,6 +346,7 @@ function OrdersController($scope, $location, Order, Menu) {
       ] }];
   $scope.menu = [];
   $scope.noOrders = [];
+  $scope.missedOrders = [];
 
   $scope.init = function() {
     $scope.title = $location.search().title;
@@ -356,20 +359,24 @@ function OrdersController($scope, $location, Order, Menu) {
         var studentsWhoOrdered = [];
         angular.forEach($scope.classrooms, function(classroom) {
           students = students.concat(classroom.students);
-          var hasOrders = false;
-          angular.forEach(classroom.students, function(student) {
+          if (classroom.ordered) {
+            var hasOrders = false;
+            angular.forEach(classroom.students, function(student) {
               var studentOrdered = false;
               if (student.order) {
-                  for (var item in student.order) {
-                      if (student.order[item]) {
-                          hasOrders = true;
-                          studentOrdered = true;
-                      }
+                for (var item in student.order) {
+                  if (student.order[item]) {
+                    hasOrders = true;
+                    studentOrdered = true;
                   }
+                }
               }
               if (studentOrdered) { studentsWhoOrdered.push(student); }
-          });
-          if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
+            });
+            if (!hasOrders) { $scope.noOrders.push( classroom.grade + " - " + classroom.teacher )}
+          } else {
+            $scope.missedOrders.push(classroom.grade + " - " + classroom.teacher);
+          }
         });
 
         if ($scope.shortlist === '1') { students = studentsWhoOrdered; }

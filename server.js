@@ -38,6 +38,7 @@ var ensureCurrentDay = function() {
             student.order = {};
           });
         }
+        classroom.specialRequest = '';
       });
     }
 
@@ -49,14 +50,13 @@ var persistData = function() {
   fs.rename("./data.json", "./data.backup", function(renameError) {
     if (renameError) {
       console.log(renameError);
-    } else {
-      fs.writeFile("./data.json", JSON.stringify(lunchroomData), function(saveError) {
-        if(saveError) {
-          console.log(saveError);
-        }
-      })
     }
   });
+  fs.writeFile("./data.json", JSON.stringify(lunchroomData), function(saveError) {
+    if(saveError) {
+      console.log(saveError);
+    }
+  })
 }
 
 fs.readFile("./data.json", 'utf8', function(err, data) {

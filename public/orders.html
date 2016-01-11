@@ -38,6 +38,17 @@
       .page-break { display: block; page-break-after: always; }
     }
 
+    q {
+      padding: 8px;
+      border: solid 1px;
+      display: block;
+      font-size: 0.8em;
+    }
+
+    .special-request {
+      padding-top: 16px;
+    }
+
   </style>
 </head>
 <body>
@@ -56,6 +67,9 @@
                   </span>
                 </span>
               </div>
+              <div ng-if="classrooms[$index+0].specialRequest" class="special-request">
+                <strong><small> Special Request: </small></strong><q>{{ classrooms[$index+0].specialRequest }}</q>
+              </div>
             </span>
             <span class="span4" ng-show="classrooms[$index+1]">
               <h3>{{ classrooms[$index+1].grade }} - {{ classrooms[$index+1].teacher }}</h3>
@@ -66,8 +80,11 @@
                   </span>
                 </span>
               </div>
+              <div ng-if="classrooms[$index+1].specialRequest" class="special-request">
+                <strong><small> Special Request: </small></strong><q>{{ classrooms[$index+1].specialRequest }}</q>
+              </div>
             </span>
-            <span class="span4" ng-show="classrooms[$index+1]">
+            <span class="span4" ng-show="classrooms[$index+2]">
               <h3>{{ classrooms[$index+2].grade }} - {{ classrooms[$index+2].teacher }}</h3>
               <div ng-repeat="student in classrooms[$index+2].students | orderBy:'name'" style="padding: 6px 0;">
                 <span ng-init="items = getOrderItems(student.order)">{{ student.name }} -
@@ -75,6 +92,9 @@
                     <strong>{{ item }}</strong><span ng-hide="$last">, </span>
                   </span>
                 </span>
+              </div>
+              <div ng-if="classrooms[$index+2].specialRequest" class="special-request">
+                <strong><small> Special Request: </small></strong><q>{{ classrooms[$index+2].specialRequest }}</q>
               </div>
             </span>
           </div>
@@ -134,10 +154,16 @@
       </tbody>
     </table>
     <br/>
-    <div>
+    <div ng-if="noOrders.length > 0">
       <h4>Classrooms With No Order</h4>
       <ul>
         <li ng-repeat="noOrder in noOrders">{{ noOrder }}</li>
+      </ul>
+    </div>
+    <div ng-if="missedOrders.length > 0">
+      <h4>Classrooms That Haven't Ordered</h4>
+      <ul>
+        <li ng-repeat="missedOrder in missedOrders">{{ missedOrder }}</li>
       </ul>
     </div>
   </div>
