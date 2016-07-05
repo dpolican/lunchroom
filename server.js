@@ -39,6 +39,7 @@ var ensureCurrentDay = function() {
           });
         }
         classroom.specialRequest = '';
+        classroom.ordered = false;
       });
     }
 

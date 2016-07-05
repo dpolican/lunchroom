@@ -60,8 +60,14 @@ var LunchroomConstants = {
     { initials: "S", sort: 10, code: "10th", description: "Sophomore" },
     { initials: "J", sort: 11, code: "11th", description: "Junior" },
     { initials: "S", sort: 12, code: "12th", description: "Senior" }],
-  days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  weeklyFrequency: {code: "WEEKLY", description: "Every Week"},
+  oddWeekFrequency: {code: "ODD_WEEKS", description: "Odd Weeks of the Month"},
+  evenWeekFrequency: {code: "EVEN_WEEKS", description: "Even Weeks of the Month"},
 };
+
+LunchroomConstants.menuItemFrequency = [LunchroomConstants.weeklyFrequency, LunchroomConstants.oddWeekFrequency, LunchroomConstants.evenWeekFrequency];
+
 
 var LunchroomFunctions = {
   getMenuItemCode: function(name) {
@@ -91,6 +97,15 @@ var LunchroomFunctions = {
       return name.substr(0, leftBracketIndex);
     }
     return name;
+  },
+
+  isTodayOddWeek: function() {
+    var today = new Date();
+    var dayOfMonth = today.getDate();
+    console.log("Day of month: " + dayOfMonth);
+    var weekOfMonth = Math.trunc(dayOfMonth / 7) + 1;
+    console.log("Week of month: " + weekOfMonth);
+    return weekOfMonth % 2;
   }
 
 }
@@ -165,9 +180,32 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
     return !hasGradeDesignation;
   }
 
+  var menuItemMatchesWeek = function(item) {
+    if (item.frequency.code === LunchroomConstants.weeklyFrequency.code) {
+      console.log("Every week.");
+      return true;
+
+    }
+    if ($scope.oddWeek) {
+      if (item.frequency.code === LunchroomConstants.oddWeekFrequency.code) {
+        console.log("Odd week.");
+        return true;
+      }
+    } else {
+      if (item.frequency.code === LunchroomConstants.evenWeekFrequency.code) {
+        console.log("Even week.");
+        return true;
+      }
+    }
+
+    console.log("No match.");
+    return false;
+  }
+
   $scope.init = function() {
     var id = $location.search().id;
     if (id) {
+      $scope.oddWeek = LunchroomFunctions.isTodayOddWeek();
       $scope.classroom = Classroom.get({ 'classroomId': id }, function() {
         if (!$scope.classroom.students) {
           $scope.classroom.students = [];
@@ -185,7 +223,9 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
           var todaysMenu = [];
 
           angular.forEach(menu, function(menuItem) {
-            if ((menuItem.day == today || menuItem.misc) && (menuItemHasNoGradeDesignation(menuItem) || menuItem[gradeCode])) {
+            if ((menuItem.day == today || menuItem.misc)
+                && (menuItemHasNoGradeDesignation(menuItem) || menuItem[gradeCode])
+                && menuItemMatchesWeek(menuItem)) {
               todaysMenu.push(menuItem);
             }
           });
@@ -266,6 +306,7 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
 }
 
 function MenuController($scope, $window, $log, Menu) {
+  $scope.menuItemFrequency = LunchroomConstants.menuItemFrequency;
   $scope.menu = [];
   $scope.grades = LunchroomConstants.grades;
   $scope.menuGroups = [{ misc: true, day: "Everyday" },
@@ -309,6 +350,7 @@ function MenuItemController($scope) {
     $scope.newItem.code = LunchroomFunctions.getMenuItemCode($scope.newItem.name);
     $scope.newItem.day = $scope.group.day;
     $scope.newItem.misc = $scope.group.misc;
+    $scope.newItem.frequency = LunchroomConstants.weeklyFrequency;
     $scope.menu.push($scope.newItem);
     $scope.newItem = {};
   };

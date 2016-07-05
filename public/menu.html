@@ -33,6 +33,10 @@
                 <button ng-repeat="g in grades" ng-class="{'btn':true, 'btn-mini': true, 'btn-inverse':item[g.code] }" ng-click="toggleGrade(item, g)">{{ g.initials }}</button>
               </span>
               &#160;&#160;
+              <span>
+                <select ng-model="item.frequency" ng-options="option as option.description for option in menuItemFrequency track by option.code">
+                </select>
+              </span>
               <button class="btn btn-mini btn-danger" ng-click="deleteItem(item)" title="Delete Item"><i class="icon-trash icon-white"></i></button>
             </span>
           </td>
