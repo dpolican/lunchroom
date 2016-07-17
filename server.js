@@ -58,7 +58,7 @@ var persistData = function() {
       console.log(saveError);
     }
   })
-}
+};
 
 fs.readFile("./data.json", 'utf8', function(err, data) {
   if (data) {
@@ -132,7 +132,7 @@ app.namespace('/lunchroom', function() {
         var grades = req.param('grades');
         if (!util.isArray(grades)) {
             var grade = grades;
-            grades = new Array();
+            grades = [];
             grades.push(grade);
         }
         var classrooms = [];

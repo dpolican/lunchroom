@@ -102,13 +102,33 @@ var LunchroomFunctions = {
   isTodayOddWeek: function() {
     var today = new Date();
     var dayOfMonth = today.getDate();
-    console.log("Day of month: " + dayOfMonth);
     var weekOfMonth = Math.trunc(dayOfMonth / 7) + 1;
-    console.log("Week of month: " + weekOfMonth);
     return weekOfMonth % 2;
-  }
+  },
 
-}
+  menuItemMatchesWeek: function(oddWeek, item) {
+    if (!item.frequency) {
+      // Default menu items created before frequency feature to show up every week.
+      return true;
+    }
+
+    if (item.frequency.code === LunchroomConstants.weeklyFrequency.code) {
+      return true;
+
+    }
+    if (oddWeek) {
+      if (item.frequency.code === LunchroomConstants.oddWeekFrequency.code) {
+        return true;
+      }
+    } else {
+      if (item.frequency.code === LunchroomConstants.evenWeekFrequency.code) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+};
 
 function LunchroomController($scope, Classroom) {
   $scope.classrooms = [ { id: 1, grade: "Kin", teacher: "Mrs. Smith" }];
@@ -178,34 +198,15 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
     });
 
     return !hasGradeDesignation;
-  }
+  };
 
-  var menuItemMatchesWeek = function(item) {
-    if (item.frequency.code === LunchroomConstants.weeklyFrequency.code) {
-      console.log("Every week.");
-      return true;
 
-    }
-    if ($scope.oddWeek) {
-      if (item.frequency.code === LunchroomConstants.oddWeekFrequency.code) {
-        console.log("Odd week.");
-        return true;
-      }
-    } else {
-      if (item.frequency.code === LunchroomConstants.evenWeekFrequency.code) {
-        console.log("Even week.");
-        return true;
-      }
-    }
 
-    console.log("No match.");
-    return false;
-  }
+
 
   $scope.init = function() {
     var id = $location.search().id;
     if (id) {
-      $scope.oddWeek = LunchroomFunctions.isTodayOddWeek();
       $scope.classroom = Classroom.get({ 'classroomId': id }, function() {
         if (!$scope.classroom.students) {
           $scope.classroom.students = [];
@@ -219,13 +220,14 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
         });
 
         var menu = Menu.query(function() {
+          var oddWeek = LunchroomFunctions.isTodayOddWeek();
           var today = LunchroomConstants.days[new Date().getDay()];
           var todaysMenu = [];
 
           angular.forEach(menu, function(menuItem) {
             if ((menuItem.day == today || menuItem.misc)
                 && (menuItemHasNoGradeDesignation(menuItem) || menuItem[gradeCode])
-                && menuItemMatchesWeek(menuItem)) {
+                && LunchroomFunctions.menuItemMatchesWeek(oddWeek, menuItem)) {
               todaysMenu.push(menuItem);
             }
           });
@@ -333,7 +335,7 @@ function MenuController($scope, $window, $log, Menu) {
 }
 
 function MenuItemController($scope) {
-  $scope.newItem = {}
+  $scope.newItem = {};
 
   var codeExists = function(code) {
     var found = false;
@@ -344,7 +346,7 @@ function MenuItemController($scope) {
     }, found);
 
     return found;
-  }
+  };
 
   $scope.addItem = function() {
     $scope.newItem.code = LunchroomFunctions.getMenuItemCode($scope.newItem.name);
@@ -440,11 +442,13 @@ function OrdersController($scope, $location, Order, Menu) {
       });
     }
     var menu = Menu.query(function() {
+      var oddWeek = LunchroomFunctions.isTodayOddWeek();
       var today = LunchroomConstants.days[new Date().getDay()];
       var orderMenu = [];
 
       angular.forEach(menu, function(menuItem) {
-        if (menuItem.day == today || menuItem.misc) {
+        if ((menuItem.day == today || menuItem.misc)
+          && LunchroomFunctions.menuItemMatchesWeek(oddWeek, menuItem)) {
           orderMenu.push(menuItem);
         }
       }, orderMenu);
@@ -473,7 +477,7 @@ function OrdersController($scope, $location, Order, Menu) {
       }
     }
     return result;
-  }
+  };
 
   $scope.getDisplayName = function(itemName) {
     return LunchroomFunctions.getMenuItemDisplayName(itemName);
