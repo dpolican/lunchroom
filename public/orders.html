@@ -138,6 +138,11 @@
         </span>
       </span>
     </div>
+    <div class="container classroom-order" ng-repeat="classroom in classrooms | orderBy:getGradeSortValue" ng-show="combine" >
+      <div ng-if="classrooms[$index].specialRequest" class="special-request">
+        <strong><small>Special Request  for</small> {{ classrooms[$index].grade }} - {{ classrooms[$index].teacher }}:</strong><q>{{ classrooms[$index].specialRequest }}</q>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>
