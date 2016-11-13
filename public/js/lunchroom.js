@@ -22,6 +22,21 @@ if (!Array.prototype.indexOf) {
   };
 }
 
+Date.prototype.getWeek = function() {
+  var date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  // Thursday in current week decides the year.
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  // January 4 is always in week 1.
+  var week1 = new Date(date.getFullYear(), 0, 4);
+  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+          - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+var todaysDate = new Date();
+todaysDate.setDate(todaysDate.getDate() + 1);
+
 var lunchroom = angular.module('lunchroom', ['ngResource']);
 lunchroom.config(['$locationProvider',
   function($locationProvider) {
@@ -62,8 +77,8 @@ var LunchroomConstants = {
     { initials: "S", sort: 12, code: "12th", description: "Senior" }],
   days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
   weeklyFrequency: {code: "WEEKLY", description: "Every Week"},
-  oddWeekFrequency: {code: "ODD_WEEKS", description: "Odd Weeks of the Month"},
-  evenWeekFrequency: {code: "EVEN_WEEKS", description: "Even Weeks of the Month"},
+  oddWeekFrequency: {code: "ODD_WEEKS", description: "Odd Weeks"},
+  evenWeekFrequency: {code: "EVEN_WEEKS", description: "Even Weeks"},
 };
 
 LunchroomConstants.menuItemFrequency = [LunchroomConstants.weeklyFrequency, LunchroomConstants.oddWeekFrequency, LunchroomConstants.evenWeekFrequency];
@@ -100,10 +115,7 @@ var LunchroomFunctions = {
   },
 
   isTodayOddWeek: function() {
-    var today = new Date();
-    var dayOfMonth = today.getDate();
-    var weekOfMonth = Math.trunc(dayOfMonth / 7) + 1;
-    return weekOfMonth % 2;
+    return todaysDate.getWeek() % 2;
   },
 
   menuItemMatchesWeek: function(oddWeek, item) {
@@ -221,7 +233,7 @@ function ClassroomController($scope, $location, $window, $log, Classroom, Menu) 
 
         var menu = Menu.query(function() {
           var oddWeek = LunchroomFunctions.isTodayOddWeek();
-          var today = LunchroomConstants.days[new Date().getDay()];
+          var today = LunchroomConstants.days[todaysDate.getDay()];
           var todaysMenu = [];
 
           angular.forEach(menu, function(menuItem) {
@@ -443,7 +455,7 @@ function OrdersController($scope, $location, Order, Menu) {
     }
     var menu = Menu.query(function() {
       var oddWeek = LunchroomFunctions.isTodayOddWeek();
-      var today = LunchroomConstants.days[new Date().getDay()];
+      var today = LunchroomConstants.days[todaysDate.getDay()];
       var orderMenu = [];
 
       angular.forEach(menu, function(menuItem) {
