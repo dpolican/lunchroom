@@ -35,7 +35,6 @@ Date.prototype.getWeek = function() {
 }
 
 var todaysDate = new Date();
-todaysDate.setDate(todaysDate.getDate() + 1);
 
 var lunchroom = angular.module('lunchroom', ['ngResource']);
 lunchroom.config(['$locationProvider',
